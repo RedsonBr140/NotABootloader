@@ -1,17 +1,34 @@
-[ORG 0x7C00]                   ; The magic BIOS number
-[BITS 16]                      ; NASM should generate code to run in 16-bit mode
+[ORG 0x7C00]                           ; The magic BIOS number
+[BITS 16]                              ; NASM should generate code to run in 16-bit mode
 
-hlt                            ; halt the CPU
-mov ah, 0h                     ; Set video mode
-mov al, 3h                     ; 80x25
-int 10h                        ; interrupt 10h
-mov si, msg                    ; as lodsb loads SI into AL, we load the msg into SI
-call print                     ; Print hello
+hlt																		 ; halt the CPU
+mov ah, 0h                             ; Set video mode
+mov al, 3h                             ; 80x25
+int 10h                                ; interrupt 10h
+mov si, msg                            ; as lodsb loads SI into al, we load the msg into SI
+call print                             ; Print hello
+
+xor ah,ah                              ; ah = 0
+int 16h                                ; Interrupt 16
+cmp al, 0x71                           ; Is al equals to q(in ASCII)?
+je poweroff                            ; If so, call poweroff
+cmp al, 0x72                           ; Is al equals to r(in ASCII)?
+je reset                               ; If so, call reset
+
+poweroff:
+        mov ah, 53h
+        mov al, 07h
+        mov bx, 0001h
+        mov cx, 03h
+        int 15h
+
+reset:
+        jmp 0xFFFF:0
 
 print:
-        lodsb                          ; Load bytes at SI into AL
+        lodsb                          ; Load bytes at SI into al
         cmp al, 0                      ; compare al to 0
-        je done                        ; If AL equals to 0, then we're finished.
+        je done                        ; If al equals to 0, then we're finished.
         mov ah, 0Eh                    ; Write character
         xor bh, bh                     ; background = 0
         int 10h                        ; interrupt 10h
