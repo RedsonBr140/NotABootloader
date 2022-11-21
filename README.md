@@ -1,10 +1,10 @@
-# Simple bootloader
+# Not a bootloader
 A bootloader that just prints "Hello, World!"
 
 ## Dependencies
  - Qemu - For running the bootloader
  - NASM - The Assembler
- 
+
 ## Running
 ```sh
 make # Build and run
@@ -13,3 +13,7 @@ make run # Build and run
 ```
 
 > If you want the binary, it's on `build/bootloader.bin`
+
+## Keys
+Press `q` to turn off.<br>
+Press `r` to reset.
